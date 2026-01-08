@@ -1,13 +1,19 @@
+package com.example.roomgatos
+
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Delete
 
 @Dao
-interface RecordDao {
+interface GatosDao {
 
-    @Query("SELECT * FROM record_table WHERE id = 1")
-    fun getRecord(): RecordEntity?
+    @Query("SELECT * FROM cat_table")
+    fun getAllCats(): List<GatosEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun saveRecord(record: RecordEntity)
+    @Insert
+    fun insertCat(cat: GatosEntity)
+
+    @Delete
+    fun deleteCat(cat: GatosEntity)
 }
