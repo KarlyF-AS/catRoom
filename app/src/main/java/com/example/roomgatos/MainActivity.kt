@@ -1,47 +1,34 @@
-package com.example.roomgatos
+package gz.dam.catroomapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.roomgatos.ui.theme.RoomGatosTheme
+import androidx.room.Room
+import com.example.roomgatos.GatosEntity
+import gz.dam.catroomapp.data.database.AppDatabase
+import gz.dam.catroomapp.data.entity.CatEntity
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            RoomGatosTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-        }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "cat_database"
+        )
+            .allowMainThreadQueries() // SOLO para ejemplo
+            .build()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RoomGatosTheme {
-        Greeting("Android")
+        val GatosDao = db.GatosDao()
+
+        // Insertamos gatitos
+        GatosDao.insertCat(GatosEntity(name = "Michi", age = 2, color = "Naranja"))
+        GatosDao.insertCat(GatosEntity(name = "Luna", age = 4, color = "Negra"))
+
+        // Recuperamos los gatitos
+        val cats = GatosDao.getAllCats()
+        Log.d("CAT_ROOM", "Gatitos guardados: $cats")
     }
 }
